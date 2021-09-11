@@ -1,5 +1,5 @@
 let SERVER_ADDR = "http://127.0.0.1:8080"
-
+let CORS_HOST = "0.0.0.0:4321"
 function ignoreDefaultAction(event){
     event.preventDefault()
     event.stopPropagation()
@@ -20,7 +20,7 @@ function testEndpoint(){
     url = "https://www.udiscovermusic.com/wp-content/uploads/2020/11/Miles-Davis-GettyImages-84843312.jpg"
     fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'no-cors', // no-cors, *cors, same-origin
+        mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
@@ -50,6 +50,7 @@ function testEndpoint(){
 function sendToServer(file){
     var formData = new FormData()
     formData.append('file', file)
+    console.log(`Sending ${file} to exif server...`)
     fetch(SERVER_ADDR, { method: 'POST', body: formData })
     .then(response => response.json())
     .then(success => console.log(success))
@@ -98,11 +99,13 @@ filezone.addEventListener('drop', async (ev) => {
         }
     }
     else if(containsURL(ev)){ 
-        url = ev.dataTransfer.getData('URL')
-        fetch(url)
+        resource_url = ev.dataTransfer.getData('URL')
+        proxied_url = 'http://' + CORS_HOST + '/' + resource_url
+        alert(`proxying thru ${proxied_url}...`)
+        fetch(proxied_url)
         .then(response => response.blob(), {
             method: 'post', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, *cors, same-origin
+            mode: 'cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, *same-origin, omit
             headers: {
@@ -114,33 +117,9 @@ filezone.addEventListener('drop', async (ev) => {
         })
         .then(imageBlob => {
             const imageObjectURL = URL.createObjectURL(imageBlob);
-            console.log(imageObjectURL);
+            file = new File([imageBlob], "file_data")
+            sendToServer(file)
         });
-        // console.log(`url is ${url}`)
-        // let request = await fetch(url, {
-        //     method: 'post', // *GET, POST, PUT, DELETE, etc.
-        //     mode: 'no-cors', // no-cors, *cors, same-origin
-        //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        //     credentials: 'same-origin', // include, *same-origin, omit
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //         'Access-Control-Allow-Origin': '*',
-        //     },
-        //     redirect: 'follow', // manual, *follow, error
-        //     referrerPolicy: 'no-referrer',
-        // })
-        
-        // let file = await request.blob()
-        // console.log(file)
-        // let reader = new FileReader();
-        // reader.readAsBinaryString(file); // converts the blob to base64 and calls onload
-        // reader.onload = () => {
-        //     let data = reader.result; // data url
-        //     console.log(`data is: ${data}`)
-        //     sendToServer(data)
-        // };
-        
-
     }
     else{
         alert("is not valid")
@@ -168,3 +147,11 @@ async function fileToBinary(file){
         return null
    }
 }
+
+//todo:
+//1. scrap data from image
+//2. send scraped data back to client
+//3. add file checking at apis
+//4. prettify frontend
+//5. add manifest.json
+
