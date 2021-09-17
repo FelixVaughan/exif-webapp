@@ -4,33 +4,30 @@ const app = express()
 const port = 8080
 const multer  = require('multer')
 const upload = multer()
+const exifr = require('exifr')
 const fs = require('fs')
-
-function blobToFile(theBlob, fileName){
-    theBlob.lastModifiedDate = new Date();
-    theBlob.name = fileName;
-    return theBlob;
-}
+var ExifImage = require('exif').ExifImage;
 
 
-app.post('/', upload.single('file'), function (req, res, next) {
-  let file = req.file
-  console.log(file)
-  fs.writeFile('nodefile', file, (err) => {
-    if (err) throw err;
-    // success case, the file was saved
-});
-  
-//   fs.writeFile('/file', req.file.buffer, {}, (err, res) => {
-//         if(err){
-//             console.error(err)
-//             return
-//         }
-//         console.log('video saved')
-//     })
+app.post('/', upload.single('file'), async (req, res, next) => {
+  let buffer = req.file.buffer
+  try {
+    new ExifImage({image : buffer},  (error, exifData) => {
+        if (error)
+            console.log('Error: ' + error.message);
+        else
+            data = exifData
+            console.log(data)
+            res.header('Access-Control-Allow-Origin', '*')
+            res.send(data)
+    });
+  }catch (error) {
+      console.log('Error: ' + error.message);
+  }
+
 })
 
 
 app.listen(port, () => {
-  console.log(`Listening on port ${port}`)  
+  console.log(`Exif server listening on port ${port}`)  
 })

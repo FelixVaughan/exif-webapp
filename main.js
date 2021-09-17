@@ -16,45 +16,20 @@ function containsFiles(event) {
     return false;
 }
 
-function testEndpoint(){
-    url = "https://www.udiscovermusic.com/wp-content/uploads/2020/11/Miles-Davis-GettyImages-84843312.jpg"
-    fetch(url, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer',
-    })
-    .then(
-        (response) => {
-            console.log(response)
-            return response.blob()
-        }
-
-        )
-    .then(imageBlob => {
-        console.log(`blob data is: ${imageBlob.size}`)
-        let file = new File([imageBlob], "test.jpg"); 
-        console.log(file)
-        sendToServer(file)
-    });
-}
-
 //window.addEventListener("click", testEndpoint)
 
 function sendToServer(file){
     var formData = new FormData()
-    formData.append('file', file)
-    console.log(`Sending ${file} to exif server...`)
-    fetch(SERVER_ADDR, { method: 'POST', body: formData })
-    .then(response => response.json())
-    .then(success => console.log(success))
-    .catch(error => console.log(error));
+    var reader = new FileReader()
+    var data = reader.readAsBinaryString(file)
+    reader.onload = (ev) => {
+		data = ev.target.result
+        formData.append('file', file); formData.append('ext', 'x')
+        fetch(SERVER_ADDR, { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(success => console.log(success))
+        .catch(error => console.log(error));
+    };
 }
 
 function containsURL(event){
@@ -101,7 +76,6 @@ filezone.addEventListener('drop', async (ev) => {
     else if(containsURL(ev)){ 
         resource_url = ev.dataTransfer.getData('URL')
         proxied_url = 'http://' + CORS_HOST + '/' + resource_url
-        alert(`proxying thru ${proxied_url}...`)
         fetch(proxied_url)
         .then(response => response.blob(), {
             method: 'post', // *GET, POST, PUT, DELETE, etc.
@@ -151,7 +125,9 @@ async function fileToBinary(file){
 //todo:
 //1. scrap data from image
 //2. send scraped data back to client
-//3. add file checking at apis
-//4. prettify frontend
-//5. add manifest.json
+//3. prettify frontend
+//4. dockerize
+//5. add manifest.json 
+//6. add file checking at apis
+
 
