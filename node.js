@@ -8,6 +8,9 @@ const exifr = require('exifr')
 const fs = require('fs')
 var ExifImage = require('exif').ExifImage;
 
+parseExif = (data) => {
+  return data
+}
 
 app.post('/', upload.single('file'), async (req, res, next) => {
   let buffer = req.file.buffer
@@ -16,10 +19,10 @@ app.post('/', upload.single('file'), async (req, res, next) => {
         if (error)
             console.log('Error: ' + error.message);
         else
-            data = exifData
+            data = parseExif(exifData)
             console.log(data)
             res.header('Access-Control-Allow-Origin', '*')
-            res.send(data)
+            res.json(data)
     });
   }catch (error) {
       console.log('Error: ' + error.message);

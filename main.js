@@ -26,8 +26,13 @@ function sendToServer(file){
 		data = ev.target.result
         formData.append('file', file); formData.append('ext', 'x')
         fetch(SERVER_ADDR, { method: 'POST', body: formData })
-        .then(response => response.json())
-        .then(success => console.log(success))
+        .then(response => response.text())
+        .then(
+            success => {
+                let display = document.querySelector("#result_display")
+                display.textContent = success
+                display.hidden = false
+        })
         .catch(error => console.log(error));
     };
 }
