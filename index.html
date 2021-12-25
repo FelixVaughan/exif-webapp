@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="main.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-        <script src="main.js" async defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
-    </head>
-    <body> 
-        <div id="filezone">
-            Click or Drop to Add Files
-            <input type="file" style="display: none" id="inv-button" />
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="main.css">
+    <script src="main.js" async defer></script>
+</head>
+
+<body>
+    <header>
+        <div id="topNav">
+            EXtractor
         </div>
-        <div id="result_display" hidden></div>
-    </body>
+    </header>
+    <div id="filezone" class="top-content">
+        Click or Drop to Add Files
+        <input type="file" style="display: none" id="inv-button" />
+    </div>
+    <textarea id="output" class="top-content" rows="4" cols="66" readonly>
+    </textarea>
+    <br><br><br><br><br>
+    <h2>About</h2>
+    <p>
+        Just a simple site that scrapes images with exif metadata for your convinience
+        and returns the results back to you (assumung your images play nice.) <br>
+        Note: Does not work with all formats, only the cool ones ;)
+    </p>
+</body>
+
 </html>
